@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>تحليل كيترنق وكاد</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@400;500&display=swap">
+<style>
+.wk{direction:rtl;font-family:var(--font-anthropic-sans),"Noto Kufi Arabic","Segoe UI",Tahoma,sans-serif;display:flex;flex-direction:column;gap:var(--cds-gap-xl);max-width:1200px;margin-inline:auto;color:var(--color-fg)}
+.wk h1{font-family:var(--font-anthropic-serif),"Noto Naskh Arabic",serif;font-weight:400;font-size:var(--cds-font-size-title);margin:0;text-wrap:balance}
+.wk .lede{font-size:var(--cds-font-size-body);color:var(--color-fg-muted);margin:var(--cds-gap-xs) 0 0;max-width:70ch;line-height:1.8}
+.wk .lede b{color:var(--color-fg);font-weight:600}
+.wk .period{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);letter-spacing:.02em}
+.wk h2{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium);margin:0}
+.wk .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,10.5rem),1fr));gap:var(--cds-gap-md)}
+.wk .tile{background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-md) var(--cds-pad-lg);display:flex;flex-direction:column;gap:var(--cds-gap-xs);min-width:0}
+.wk .tile .lab{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.wk .tile .num{font-family:var(--font-anthropic-serif),serif;font-weight:400;font-size:var(--cds-font-size-title);font-variant-numeric:tabular-nums;line-height:1.15;min-height:1.2em}
+.wk .tile .sub{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);min-height:1.3em}
+.wk .tile.bad .num{color:var(--color-bad)}
+.wk .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:var(--cds-gap-md)}
+.wk .card{background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-lg);display:flex;flex-direction:column;gap:var(--cds-gap-sm);min-width:0;position:relative}
+.wk .card .note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:0;line-height:1.7}
+.wk .hb{display:flex;flex-direction:column;gap:var(--cds-gap-sm);min-height:8rem}
+.wk .hb-row{display:grid;grid-template-columns:minmax(6rem,11rem) 1fr;gap:var(--cds-gap-sm);align-items:center;font-size:var(--cds-font-size-caption)}
+.wk .hb-lab{color:var(--color-fg);line-height:1.4}
+.wk .hb-track{display:flex;align-items:center;gap:var(--cds-gap-xs);min-width:0}
+.wk .hb-bar{height:1.1rem;border-radius:4px;min-width:3px;background:var(--hb,var(--cds-chart-muted))}
+.wk .hb-val{font-variant-numeric:tabular-nums;color:var(--color-fg-muted);white-space:nowrap}
+.wk .hb-val b{color:var(--color-fg);font-weight:600}
+.wk .funnel .hb-bar{height:1.6rem}
+.wk .chart{width:100%;min-height:230px}
+.wk .chart text{fill:var(--color-fg-muted);font-size:11px;font-family:var(--font-anthropic-sans),sans-serif}
+.wk .legend{display:flex;flex-wrap:wrap;gap:var(--cds-gap-md);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.wk .legend i{display:inline-block;width:.7rem;height:.7rem;border-radius:3px;margin-inline-end:.35rem;vertical-align:-1px}
+.wk .tip{position:absolute;pointer-events:none;background:var(--cds-surface-popover);border:1px solid var(--cds-border);border-radius:var(--cds-radius);box-shadow:var(--cds-shadow-popover);padding:var(--cds-pad-xs) var(--cds-pad-sm);font-size:var(--cds-font-size-caption);line-height:1.6;white-space:nowrap;z-index:5}
+.wk .tip .h{color:var(--cds-text-secondary)}
+.wk table{width:100%;border-collapse:collapse;font-size:var(--cds-font-size-caption);font-variant-numeric:tabular-nums}
+.wk th{text-align:start;font-weight:var(--cds-font-weight-medium);color:var(--color-fg-muted);border-bottom:1px solid var(--color-border-line);padding:var(--cds-pad-xs) var(--cds-pad-sm)}
+.wk td{padding:var(--cds-pad-xs) var(--cds-pad-sm);border-bottom:1px solid var(--color-border-line)}
+.wk .recs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:var(--cds-gap-md)}
+.wk .rec{border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-md) var(--cds-pad-lg);display:flex;flex-direction:column;gap:var(--cds-gap-xs)}
+.wk .rec .tag{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.wk .rec h3{margin:0;font-size:var(--cds-font-size-body);font-weight:600}
+.wk .rec p{margin:0;font-size:var(--cds-font-size-caption);line-height:1.8;color:var(--color-fg-muted)}
+.wk .method{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);line-height:1.9;max-width:80ch}
+.wk .method ul{margin:var(--cds-gap-xs) 0 0;padding-inline-start:1.2rem}
+.wk .fail{display:flex;align-items:center;justify-content:center;gap:.4rem;min-height:inherit;color:var(--color-fg-muted);font-size:var(--cds-font-size-caption)}
+.wk .fail::before{content:"";width:.375rem;height:.375rem;border-radius:50%;background:var(--color-bad)}
+
+.wk .hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,24rem),1fr));gap:var(--cds-gap-md)}
+.wk .big{font-family:var(--font-anthropic-serif),serif;font-weight:400;font-size:calc(var(--cds-font-size-title)*1.9);line-height:1;font-variant-numeric:tabular-nums;color:var(--wk-fast);min-width:3ch}
+.wk .eyebrow{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);letter-spacing:.03em}
+.wk .insight{display:flex;gap:var(--cds-gap-lg);align-items:flex-end;flex-wrap:wrap}
+.wk .insight p{margin:0;max-width:34ch;line-height:1.8;font-size:var(--cds-font-size-body)}
+.wk .money{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,10rem),1fr));gap:var(--cds-gap-md)}
+.wk .money .m{display:flex;flex-direction:column;gap:var(--cds-gap-xs);min-width:0}
+.wk .money .mv{font-family:var(--font-anthropic-serif),serif;font-size:calc(var(--cds-font-size-title)*1.35);font-variant-numeric:tabular-nums;line-height:1.1}
+.wk .money .mv small{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);font-family:var(--font-anthropic-sans),sans-serif}
+.wk .split{display:flex;height:.7rem;border-radius:99px;overflow:hidden;background:var(--cds-chart-grid);margin-top:var(--cds-gap-sm)}
+.wk .split div{height:100%}
+.wk .card.hl{border-color:var(--wk-fast);border-width:1.5px}
+.wk .cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr));gap:var(--cds-gap-md);min-height:7rem}
+.wk .cm{display:flex;flex-direction:column;gap:var(--cds-gap-xs);padding:var(--cds-pad-sm) 0;border-top:1px solid var(--color-border-line);min-width:0}
+.wk .cm .t{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.wk .cm .v{display:flex;align-items:baseline;gap:var(--cds-gap-sm);flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.wk .cm .b{color:var(--color-fg-muted);text-decoration:line-through;text-decoration-thickness:1px}
+.wk .cm .a{font-family:var(--font-anthropic-serif),serif;font-size:var(--cds-font-size-title)}
+.wk .cm .chg{font-size:var(--cds-font-size-caption);font-weight:600}
+.wk .cm .chg.good{color:var(--color-ok)}
+.wk .cm .chg.bad{color:var(--color-bad)}
+.wk [data-dash-source-state=refreshing]{opacity:.5;transition:opacity var(--cds-dur-slow)}
+.wk [data-dash-source-state=empty]{color:transparent}
+:root{color-scheme:light;
+--color-fg:#1c1a17;--color-fg-muted:#6b665d;--color-bg:#f7f6f2;--color-panel:#ffffff;--color-border-line:#e4e1d9;
+--color-ok:#1f8a4c;--color-warn:#b7791f;--color-bad:#c2410c;
+--cds-chart-muted:#c9c4b8;--cds-chart-grid:#ece9e2;--cds-chart-axis:#c9c4b8;--cds-chart-status-critical:#d4502a;
+--cds-surface-popover:#ffffff;--cds-border:#e4e1d9;--cds-shadow-popover:0 6px 20px rgba(0,0,0,.12);--cds-text-secondary:#6b665d;
+--wk-c0:#2f7d5b;--wk-c1:#3b6fb6;--wk-c2:#b8742a;
+--cds-radius:10px;--cds-pad-xs:4px;--cds-pad-sm:8px;--cds-pad-md:12px;--cds-pad-lg:18px;
+--cds-gap-xs:4px;--cds-gap-sm:8px;--cds-gap-md:14px;--cds-gap-lg:20px;--cds-gap-xl:36px;
+--cds-font-size-caption:12.5px;--cds-font-size-body:15px;--cds-font-size-heading:17px;--cds-font-size-title:30px;--cds-font-weight-medium:500;--cds-dur-slow:.3s;
+--font-anthropic-sans:"IBM Plex Sans Arabic",system-ui,sans-serif;--font-anthropic-serif:"Readex Pro","IBM Plex Sans Arabic",serif}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;
+--color-fg:#f2efe9;--color-fg-muted:#a8a296;--color-bg:#141311;--color-panel:#1d1c19;--color-border-line:#2f2d29;
+--color-ok:#4cc483;--color-warn:#e0a54a;--color-bad:#f07b54;
+--cds-chart-muted:#55514a;--cds-chart-grid:#2a2825;--cds-chart-axis:#4a4741;--cds-chart-status-critical:#ec6a43;
+--cds-surface-popover:#24231f;--cds-border:#3a3833;--cds-text-secondary:#a8a296;--wk-c0:#4fb588;--wk-c1:#6b9be0;--wk-c2:#e0a54a}}
+body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(--font-anthropic-sans)}
+#dash-root{padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.dash-skeleton:empty{min-height:1em}
+</style>
+
+</head><body><div id="dash-root"><div class="wk" dir="rtl">
+  <header id="top">
+    <div class="period">وكاد · خدمة الكيترنق · <span data-source="kpis" data-field="period" data-row="0" class="dash-skeleton">—</span></div>
+    <h1>تحليل كيترنق وكاد</h1>
+    <p class="lede" id="lede">
+      وصل <b data-source="kpis" data-field="catering" data-row="0">—</b> استفسار كيترنق على الواتساب.
+      الرد داخل المحادثة صار أسرع بكثير من الفترة اللي قبل، لكن أول رد على العميل الجديد وسيطه
+      <b data-source="kpis" data-field="median_resp_h" data-row="0">—</b> ساعة، لأن
+      <b data-source="kpis" data-field="offhours_share" data-row="0">—</b> من الاستفسارات توصل برا الدوام.
+    </p>
+  </header>
+
+  <section class="card hl" id="compare-card">
+    <span class="eyebrow">قبل وبعد</span>
+    <h2>سرعة الرد: الفترة السابقة مقابل أكتوبر</h2>
+    <p class="note">قبل = التقرير السابق (٦ يوليو – ٤ أكتوبر). بعد = ١–٢٦ أكتوبر. نفس طريقة الحساب في الفترتين: كل محادثات الواتساب، والوقت من آخر رسالة للعميل إلى أول رد بعدها. في أكتوبر حسبت ردود الفريق بس بدون الرد الآلي.</p>
+    <div class="cmp dash-skeleton" id="compare" data-source="compare compare_change"></div>
+  </section>
+
+  <section class="tiles" id="kpis" data-fetchpriority="high">
+    <div class="tile"><span class="lab">استفسارات كيترنق</span><span class="num dash-skeleton" data-source="kpis" data-field="catering" data-row="0">—</span><span class="sub">١–٢٦ أكتوبر</span></div>
+    <div class="tile bad"><span class="lab">وسيط أول رد على عميل جديد (ساعة)</span><span class="num dash-skeleton" data-source="kpis" data-field="median_resp_h" data-row="0">—</span><span class="sub"><span data-source="kpis" data-field="over_24h" data-row="0">—</span> عميل انتظر أكثر من يوم</span></div>
+    <div class="tile"><span class="lab">أول رد خلال ساعة</span><span class="num dash-skeleton" data-source="kpis" data-field="within_1h" data-row="0">—</span><span class="sub">من العملاء اللي راسلوا</span></div>
+    <div class="tile"><span class="lab">استفسارات برا الدوام</span><span class="num dash-skeleton" data-source="kpis" data-field="offhours_share" data-row="0">—</span><span class="sub">قبل ٩ص أو بعد ٥م</span></div>
+    <div class="tile"><span class="lab">طلبات حجز من الموقع</span><span class="num dash-skeleton" data-source="kpis" data-field="site_requests" data-row="0">—</span><span class="sub">نموذج WK- انرسل في الشات</span></div>
+  </section>
+
+  <section class="grid" id="sales">
+    <div class="card" id="funnel-card">
+      <h2>مسار الكيترنق</h2>
+      <p class="note">النسبة من إجمالي الاستفسارات. آخر خطوة تحسب بس اللي أرسل نموذج الموقع. الحجوزات اللي انقفلت بالشات أو بالاتصال ما تبين هنا.</p>
+      <div class="hb funnel dash-skeleton" id="funnel" data-source="funnel funnel_share"></div>
+    </div>
+    <div class="card" id="leaks-card">
+      <h2>وين يضيع العميل</h2>
+      <p class="note">عدد المحادثات لكل حالة، محسوبة من ترتيب الرسائل.</p>
+      <div class="hb dash-skeleton" id="leaks" data-source="leaks"></div>
+    </div>
+  </section>
+
+  <section class="grid" id="speed2">
+    <div class="card" id="resp-card">
+      <h2>كم ينتظر العميل الجديد أول رد</h2>
+      <p class="note">من أول رسالة للعميل إلى أول رد من الفريق، بدون الرد الآلي.</p>
+      <div class="hb dash-skeleton" id="resp" data-source="response"></div>
+    </div>
+    <div class="card" id="hourly-card">
+      <h2>متى يراسلون، وكم ننتظرهم</h2>
+      <p class="note">الاستفسارات حسب ساعة أول رسالة، واللون حسب وسيط أول رد في تلك الساعة. المظلل ٩ص–٥م.</p>
+      <div class="legend"><span><i style="background:var(--wk-fast)"></i>خلال ساعتين</span><span><i style="background:var(--cds-chart-muted)"></i>٢–٨ ساعات</span><span><i style="background:var(--cds-chart-status-critical)"></i>أكثر من ٨ ساعات</span></div>
+      <div class="chart dash-skeleton" id="hourly" data-source="hourly"></div>
+    </div>
+  </section>
+
+  <section class="grid" id="demand">
+    <div class="card" id="daily-card">
+      <h2>استفسارات الكيترنق يومياً</h2>
+      <p class="note">كل محادثة محسوبة في يوم أول رسالة فيها.</p>
+      <div class="chart dash-skeleton" id="daily" data-source="daily"></div>
+    </div>
+    <div class="card" id="price-card">
+      <h2>الباقات المعروضة في الشات</h2>
+      <p class="note">أسعار أرسلها الفريق للعملاء أكثر من مرة. الباريستا البنت إضافة على السعر.</p>
+      <table data-source="pricing" data-row-key="cups" id="pricing">
+        <thead><tr><th data-field="cups">الأكواب</th><th data-field="price_sar">السعر (ريال)</th><th data-field="per_cup">سعر الكوب</th></tr></thead>
+        <tbody class="dash-skeleton"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="recs">
+    <h2 style="margin-bottom:var(--cds-gap-sm)">وش نسوي الشهر الجاي</h2>
+    <div class="recs">
+      <div class="rec"><span class="tag">١ · برا الدوام</span><h3>رد آلي يبيع</h3><p>الرد داخل الدوام صار سريع. المشكلة صارت في اللي يراسل بالليل. خلّ الرد الآلي يرسل جدول الباقات ورابط الحجز wekad.store بدل "Please let us know how we can help you".</p></div>
+      <div class="rec"><span class="tag">٢ · العروض الساكتة</span><h3>متابعة بعد ٢٤ ساعة</h3><p>كل عرض انرسل وسكت العميل بعده، يتابَع بعد يوم برسالة قصيرة فيها التاريخ المتاح والعربون.</p></div>
+      <div class="rec"><span class="tag">٣ · الويكند</span><h3>تغطية الجمعة والسبت</h3><p>ردود الفريق يوم الجمعة والسبت في أكتوبر كانت أبطأ بكثير من باقي الأيام. حتى ساعة مناوبة وحدة تفرق.</p></div>
+      <div class="rec"><span class="tag">٤ · القياس</span><h3>كل حجز يمر من الموقع</h3><p>حالياً جزء من الحجوزات ينقفل بالشات أو بالاتصال، فما نقدر نحسبها بدقة. لو كل حجز يمر من نموذج الموقع، الشهر الجاي يصير عندنا رقم حجوزات مضبوط.</p></div>
+    </div>
+  </section>
+
+  <section class="method" id="method">
+    <h2>كيف انحسبت الأرقام</h2>
+    <ul>
+      <li>المصدر تصدير واتساب أعمال وكاد. الداشبورد عن محادثات الكيترنق بس، إلا قسم "قبل وبعد" لأن التقرير السابق كان يغطي كل المحادثات.</li>
+      <li>محادثة الكيترنق تتحدد بكلمات مثل كيترنق، كوب، ركن، ضيافة، عربة القهوة، أو نموذج الحجز WK-.</li>
+      <li>"انرسل له سعر" يعني إن الفريق أرسل مبلغ (رقم من ٤ خانات أو رقم معه "ريال") أو ملف "ركن الضيافة" أو عرض سعر.</li>
+      <li>"سكت بعد السعر" يعني إن العميل ما أرسل أي رسالة بعد أول سعر وصله.</li>
+      <li>شلت كل الأرقام التقديرية: عدد الحجوزات المؤكدة، قيمة الحجوزات بالريال، تصنيف العملاء، والأسئلة المتكررة.</li>
+      <li>أرقام الجوالات وأسماء العملاء ما دخلت في الداشبورد.</li>
+    </ul>
+  </section>
+</div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+window.WK_DATA={"kpis": [{"period": "1–26 أكتوبر 2026", "catering": 207, "median_resp_h": 12.1, "within_1h": 0.247, "over_24h": 36, "offhours_share": 0.506, "no_reply": 11, "site_requests": 10, "site_share": 0.048}], "funnel": [{"step": "استفسار كيترنق", "n": 207, "order": 0}, {"step": "رد عليه الفريق", "n": 196, "order": 1}, {"step": "انرسل له سعر أو كتالوج", "n": 142, "order": 2}, {"step": "أرسل طلب حجز من الموقع", "n": 10, "order": 3}], "response": [{"bucket": "أقل من 15 دقيقة", "n": 32, "order": 0}, {"bucket": "15–60 دقيقة", "n": 11, "order": 1}, {"bucket": "1–4 ساعات", "n": 17, "order": 2}, {"bucket": "4–12 ساعة", "n": 20, "order": 3}, {"bucket": "12–24 ساعة", "n": 47, "order": 4}, {"bucket": "أكثر من يوم", "n": 36, "order": 5}, {"bucket": "ما انرد عليه", "n": 11, "order": 6}], "hourly": [{"hour": 0, "inquiries": 8, "median_resp_h": 10.8}, {"hour": 1, "inquiries": 2, "median_resp_h": 11.8}, {"hour": 2, "inquiries": 2, "median_resp_h": 9.8}, {"hour": 3, "inquiries": 2, "median_resp_h": 47.2}, {"hour": 4, "inquiries": 1, "median_resp_h": 30.5}, {"hour": 5, "inquiries": 1, "median_resp_h": 4.7}, {"hour": 6, "inquiries": 2, "median_resp_h": 7.0}, {"hour": 7, "inquiries": 3, "median_resp_h": 55.0}, {"hour": 8, "inquiries": 5, "median_resp_h": 2.2}, {"hour": 9, "inquiries": 5, "median_resp_h": 2.0}, {"hour": 10, "inquiries": 9, "median_resp_h": 0.5}, {"hour": 11, "inquiries": 9, "median_resp_h": 0.1}, {"hour": 12, "inquiries": 2, "median_resp_h": 0.1}, {"hour": 13, "inquiries": 10, "median_resp_h": 1.1}, {"hour": 14, "inquiries": 21, "median_resp_h": 0.2}, {"hour": 15, "inquiries": 15, "median_resp_h": 19.1}, {"hour": 16, "inquiries": 15, "median_resp_h": 18.4}, {"hour": 17, "inquiries": 5, "median_resp_h": 19.7}, {"hour": 18, "inquiries": 9, "median_resp_h": 16.3}, {"hour": 19, "inquiries": 11, "median_resp_h": 16.3}, {"hour": 20, "inquiries": 8, "median_resp_h": 17.2}, {"hour": 21, "inquiries": 8, "median_resp_h": 14.1}, {"hour": 22, "inquiries": 18, "median_resp_h": 13.5}, {"hour": 23, "inquiries": 3, "median_resp_h": 13.8}], "daily": [{"day": "2026-10-01", "inquiries": 11}, {"day": "2026-10-02", "inquiries": 9}, {"day": "2026-10-03", "inquiries": 7}, {"day": "2026-10-04", "inquiries": 44}, {"day": "2026-10-05", "inquiries": 6}, {"day": "2026-10-06", "inquiries": 9}, {"day": "2026-10-07", "inquiries": 8}, {"day": "2026-10-08", "inquiries": 2}, {"day": "2026-10-09", "inquiries": 5}, {"day": "2026-10-10", "inquiries": 9}, {"day": "2026-10-11", "inquiries": 4}, {"day": "2026-10-12", "inquiries": 3}, {"day": "2026-10-13", "inquiries": 7}, {"day": "2026-10-14", "inquiries": 8}, {"day": "2026-10-15", "inquiries": 6}, {"day": "2026-10-16", "inquiries": 5}, {"day": "2026-10-17", "inquiries": 7}, {"day": "2026-10-18", "inquiries": 6}, {"day": "2026-10-19", "inquiries": 6}, {"day": "2026-10-20", "inquiries": 5}, {"day": "2026-10-21", "inquiries": 6}, {"day": "2026-10-22", "inquiries": 6}, {"day": "2026-10-23", "inquiries": 7}, {"day": "2026-10-24", "inquiries": 5}, {"day": "2026-10-25", "inquiries": 6}, {"day": "2026-10-26", "inquiries": 10}], "leaks": [{"reason": "سكت بعد ما انرسل له السعر", "chats": 80}, {"reason": "التاريخ محجوز واعتذرنا", "chats": 15}, {"reason": "ما انرد عليه إلا بالرد الآلي", "chats": 11}], "pricing": [{"cups": 25, "price_sar": 1399, "per_cup": 56.0}, {"cups": 30, "price_sar": 1450, "per_cup": 48.3}, {"cups": 50, "price_sar": 1750, "per_cup": 35.0}, {"cups": 60, "price_sar": 2100, "per_cup": 35.0}, {"cups": 70, "price_sar": 2450, "per_cup": 35.0}, {"cups": 100, "price_sar": 2800, "per_cup": 28.0}, {"cups": 150, "price_sar": 3400, "per_cup": 22.7}, {"cups": 200, "price_sar": 3900, "per_cup": 19.5}], "compare": [{"key": "resp_median", "metric": "وسيط زمن الرد على رسالة العميل", "unit": "min", "before": 37.0, "after": 6.5, "better": "down"}, {"key": "within5", "metric": "ردود خلال ٥ دقائق", "unit": "pct", "before": 0.346, "after": 0.478, "better": "up"}, {"key": "over24", "metric": "ردود تأخرت أكثر من يوم", "unit": "pct", "before": 0.142, "after": 0.08, "better": "down"}, {"key": "never", "metric": "محادثات بدون أي رد من الفريق", "unit": "pct", "before": 0.207, "after": 0.094, "better": "down"}]};
+(function(){
+  const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const calcs={},subs=[];
+  const get=id=>{if(WK_DATA[id])return {status:'ok',data:WK_DATA[id]};if(calcs[id]){const c=calcs[id];return {status:'ok',data:c.fn(...c.inputs.map(i=>get(i).data))};}return {status:'missing',data:[]};};
+  window.dash={data:get,calc:(id,o)=>{calcs[id]=o;},onData:fn=>{subs.push(fn);},
+    get colors(){return [css('--wk-c0'),css('--wk-c1'),css('--wk-c2'),'#8a6fd1','#d0617f','#4aa3a1','#9a8f3a','#7d7d7d'];}};
+  const run=()=>subs.forEach(f=>f());
+  window.addEventListener('DOMContentLoaded',run);
+  let t;window.addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(run,150);});
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',run);
+})();
+</script>
+<script>
+(function(){
+  const fmt=d3.format(','), pct=d3.format('.0%');
+  const tip=(card)=>{let t=card.querySelector('.tip');if(!t){t=document.createElement('div');t.className='tip';t.hidden=true;card.appendChild(t);}return t;};
+    document.querySelector('.wk').style.setProperty('--wk-fast',dash.colors[0]);
+
+  dash.calc('funnel_share',{inputs:['funnel'],title:'نسبة كل مرحلة من الاستفسارات',description:'عدد كل مرحلة مقسوم على عدد استفسارات الكيترنق.',
+    fn:(funnel)=>{const top=funnel[0].n;return funnel.map(r=>({step:r.step,share:r.n/top}));}});
+
+  function state(id,el){
+    const r=dash.data(id);
+    if(r.status==='ok'){el.classList.remove('dash-skeleton');el.querySelector(':scope > .fail')?.remove();return r.data;}
+    if(r.status==='loading'){el.classList.add('dash-skeleton');return null;}
+    el.classList.remove('dash-skeleton');
+    if(r.status==='error'||r.status==='connect'){el.textContent='';const f=document.createElement('div');f.className='fail';f.textContent='Failed to load';el.appendChild(f);}
+    return null;
+  }
+
+  dash.calc('compare_change',{inputs:['compare'],title:'التغير بين الفترتين',description:'الفرق بين بعد وقبل مقسوم على قبل.',
+    fn:(compare)=>compare.map(r=>({key:r.key,change:(r.after-r.before)/r.before}))});
+
+  function hbars(el,rows,o){
+    el.textContent='';
+    const max=o.max||d3.max(rows,o.val)||1;
+    rows.forEach((r,i)=>{
+      const row=document.createElement('div');row.className='hb-row';
+      const lab=document.createElement('div');lab.className='hb-lab';lab.textContent=o.label(r);
+      const tr=document.createElement('div');tr.className='hb-track';
+      const bar=document.createElement('div');bar.className='hb-bar';bar.style.width=(o.val(r)/max*82)+'%';
+      bar.style.setProperty('--hb',o.color?o.color(r,i):dash.colors[0]);
+      const v=document.createElement('div');v.className='hb-val';
+      const b=document.createElement('b');b.textContent=(o.fmt||fmt)(o.val(r));v.appendChild(b);
+      if(o.extra){const s=o.extra(r,i);if(s){v.appendChild(document.createTextNode(' · '+s));}}
+      tr.append(bar,v);row.append(lab,tr);el.appendChild(row);
+    });
+  }
+
+  function fillMarks(){
+    const f={period:v=>v,within_1h:pct,offhours_share:pct,median_resp_h:d3.format('.1f')};
+    const r=dash.data('kpis');const els=document.querySelectorAll('.wk [data-source="kpis"][data-field]');
+    els.forEach(e=>{if(r.status==='ok'){const k=r.data[0];const fld=e.dataset.field;e.classList.remove('dash-skeleton');e.textContent=(f[fld]||fmt)(k[fld]);}else{if(r.status!=='loading')e.classList.remove('dash-skeleton');e.textContent='—';}});
+  }
+
+  function drawCompare(){
+    const el=document.getElementById('compare');const rows=state('compare',el);if(!rows)return;
+    const ch=dash.data('compare_change');const chg=ch.status==='ok'?ch.data:[];
+    el.textContent='';
+    const u={min:v=>d3.format('.1f')(v)+' د',pct:v=>d3.format('.1%')(v),num:v=>d3.format('.1f')(v)};
+    rows.forEach(r=>{
+      const c=document.createElement('div');c.className='cm';
+      const t=document.createElement('span');t.className='t';t.textContent=r.metric;
+      const v=document.createElement('div');v.className='v';
+      const b=document.createElement('span');b.className='b';b.textContent=u[r.unit](r.before);
+      const a=document.createElement('span');a.className='a';a.textContent=u[r.unit](r.after);
+      v.append(b,a);
+      const z=chg.find(q=>q.key===r.key);
+      if(z){const good=(r.better==='down')?z.change<0:z.change>0;const s=document.createElement('span');s.className='chg '+(good?'good':'bad');s.textContent=(z.change>0?'+':'')+d3.format('.0%')(z.change)+(good?' تحسن':' تراجع');v.appendChild(s);}
+      c.append(t,v);el.appendChild(c);
+    });
+  }
+
+  function drawHourly(){
+    const box=document.getElementById('hourly');const rows=state('hourly',box);if(!rows){if(dash.data('hourly').status==='loading')box.textContent='';return;}
+    box.textContent='';const card=box.closest('.card');const t=tip(card);
+    const data=rows.map(r=>({hour:+r.hour,n:+r.inquiries,m:r.median_resp_h==null?null:+r.median_resp_h}));
+    const W=Math.max(280,box.clientWidth),H=230;
+    const svg=d3.select(box).append('svg').attr('width','100%').attr('viewBox',`0 0 ${W} ${H}`).attr('direction','ltr');
+    const y=d3.scaleLinear([0,d3.max(data,d=>d.n)],[0,1]).nice();
+    const probe=svg.append('text').text(fmt(y.domain()[1]));const lw=probe.node().getComputedTextLength();probe.remove();
+    const m={t:10,r:8,b:26,l:lw+12};
+    y.range([H-m.b,m.t]);
+    const x=d3.scaleBand(data.map(d=>d.hour),[m.l,W-m.r]).padding(.22);
+    svg.append('rect').attr('x',x(9)-x.step()*x.padding()/2).attr('y',m.t).attr('width',x(16)+x.bandwidth()+x.step()*x.padding()-x(9)).attr('height',H-m.b-m.t).attr('fill','var(--cds-chart-grid)').attr('opacity',.6);
+    const gy=svg.append('g').attr('transform',`translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W-m.l-m.r)).tickFormat(fmt));
+    gy.attr('font-size',null).attr('font-family',null);gy.select('.domain').remove();gy.selectAll('line').attr('stroke','var(--cds-chart-grid)');
+    const step=W<480?6:3;
+    const gx=svg.append('g').attr('transform',`translate(0,${H-m.b})`).call(d3.axisBottom(x).tickValues(data.map(d=>d.hour).filter(h=>h%step===0)).tickFormat(h=>h+':00').tickSize(0).tickPadding(8));
+    gx.attr('font-size',null).attr('font-family',null);gx.select('.domain').attr('stroke','var(--cds-chart-axis)');
+    const col=d=>d.m==null?'var(--cds-chart-muted)':d.m<=2?dash.colors[0]:d.m<=8?'var(--cds-chart-muted)':'var(--cds-chart-status-critical)';
+    svg.append('g').selectAll('rect').data(data).join('rect').attr('x',d=>x(d.hour)).attr('width',x.bandwidth()).attr('y',d=>y(d.n)).attr('height',d=>Math.max(0,y(0)-y(d.n))).attr('rx',3).attr('fill',col)
+      .on('mousemove',(ev,d)=>{t.hidden=false;t.innerHTML='';const h=document.createElement('div');h.className='h';h.textContent=`الساعة ${d.hour}:00`;const a=document.createElement('div');a.textContent=`${fmt(d.n)} استفسار`;const b=document.createElement('div');b.textContent=d.m==null?'لا يوجد رد':`وسيط الرد ${d.m} ساعة`;t.append(h,a,b);
+        const cr=card.getBoundingClientRect();let lx=ev.clientX-cr.left+12;const tw=t.offsetWidth;if(lx+tw>cr.width-8)lx=ev.clientX-cr.left-tw-12;t.style.left=Math.max(8,lx)+'px';t.style.top=(ev.clientY-cr.top-10)+'px';})
+      .on('mouseleave',()=>{t.hidden=true;});
+  }
+
+  function drawDaily(){
+    const box=document.getElementById('daily');const rows=state('daily',box);if(!rows){if(dash.data('daily').status==='loading')box.textContent='';return;}
+    box.textContent='';const card=box.closest('.card');const t=tip(card);
+    const data=rows.map(r=>({day:new Date(r.day+'T00:00:00Z'),c:+r.inquiries,o:0,n:+r.inquiries}));
+    const W=Math.max(280,box.clientWidth),H=230;
+    const svg=d3.select(box).append('svg').attr('width','100%').attr('viewBox',`0 0 ${W} ${H}`).attr('direction','ltr');
+    const y=d3.scaleLinear([0,d3.max(data,d=>d.c+d.o)],[0,1]).nice();
+    const probe=svg.append('text').text(fmt(y.domain()[1]));const lw=probe.node().getComputedTextLength();probe.remove();
+    const m={t:10,r:8,b:26,l:lw+12};y.range([H-m.b,m.t]);
+    const x=d3.scaleBand(data.map(d=>+d.day),[m.l,W-m.r]).padding(.2);
+    const gy=svg.append('g').attr('transform',`translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W-m.l-m.r)).tickFormat(fmt));
+    gy.attr('font-size',null).attr('font-family',null);gy.select('.domain').remove();gy.selectAll('line').attr('stroke','var(--cds-chart-grid)');
+    const every=W<480?7:3;const df=d3.utcFormat('%-d/%-m');
+    const gx=svg.append('g').attr('transform',`translate(0,${H-m.b})`).call(d3.axisBottom(x).tickValues(data.map(d=>+d.day).filter((v,i)=>i%every===0)).tickFormat(v=>df(new Date(v))).tickSize(0).tickPadding(8));
+    gx.attr('font-size',null).attr('font-family',null);gx.select('.domain').attr('stroke','var(--cds-chart-axis)');
+    const g=svg.append('g').selectAll('g').data(data).join('g');
+    g.append('rect').attr('x',d=>x(+d.day)).attr('width',x.bandwidth()).attr('y',d=>y(d.c)).attr('height',d=>y(0)-y(d.c)).attr('rx',3).attr('fill',dash.colors[0]);
+        g.append('rect').attr('x',d=>x(+d.day)-x.step()*x.padding()/2).attr('width',x.step()).attr('y',m.t).attr('height',H-m.b-m.t).attr('fill','transparent')
+      .on('mousemove',(ev,d)=>{t.hidden=false;t.innerHTML='';const h=document.createElement('div');h.className='h';h.textContent=df(d.day)+'/2026';const a=document.createElement('div');a.textContent=`${fmt(d.n)} استفسار`;t.append(h,a);
+        const cr=card.getBoundingClientRect();let lx=ev.clientX-cr.left+12;const tw=t.offsetWidth;if(lx+tw>cr.width-8)lx=ev.clientX-cr.left-tw-12;t.style.left=Math.max(8,lx)+'px';t.style.top=(ev.clientY-cr.top-10)+'px';})
+      .on('mouseleave',()=>{t.hidden=true;});
+  }
+
+  dash.onData(()=>{
+    fillMarks();drawCompare();
+
+    const fe=document.getElementById('funnel');const fr=state('funnel',fe);
+    if(fr){const sh=dash.data('funnel_share');const shares=sh.status==='ok'?sh.data:[];
+      const rows=[...fr].sort((a,b)=>a.order-b.order);
+      hbars(fe,rows,{label:r=>r.step,val:r=>+r.n,color:(r,i)=>i===rows.length-1?'var(--cds-chart-status-critical)':dash.colors[0],
+        extra:(r)=>{const s=shares.find(z=>z.step===r.step);return s?pct(s.share):'';}});}
+
+    const le=document.getElementById('leaks');const lr=state('leaks',le);
+    if(lr){const rows=[...lr].sort((a,b)=>b.chats-a.chats);hbars(le,rows,{label:r=>r.reason,val:r=>+r.chats,color:(r,i)=>i===0?'var(--cds-chart-status-critical)':'var(--cds-chart-muted)'});}
+
+    const re=document.getElementById('resp');const rr=state('response',re);
+    if(rr){const rows=[...rr].sort((a,b)=>a.order-b.order);hbars(re,rows,{label:r=>r.bucket,val:r=>+r.n,color:r=>r.order>=4?'var(--cds-chart-status-critical)':r.order<=1?dash.colors[0]:'var(--cds-chart-muted)'});}
+
+    const tb=document.querySelector('#pricing tbody');const pr=dash.data('pricing');
+    if(pr.status==='ok'){tb.classList.remove('dash-skeleton');tb.textContent='';
+      pr.data.forEach(r=>{const tr=document.createElement('tr');[String(r.cups),fmt(r.price_sar),d3.format('.1f')(r.per_cup)].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td);});tr.firstChild.textContent=r.cups;tb.appendChild(tr);});}
+    else if(pr.status!=='loading'){tb.classList.remove('dash-skeleton');tb.textContent='';}
+
+    drawHourly();drawDaily();
+  });
+})();
+</script>
+
+</body></html>

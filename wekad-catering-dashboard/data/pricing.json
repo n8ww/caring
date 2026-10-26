@@ -1,0 +1,42 @@
+[
+ {
+  "cups": 25,
+  "price_sar": 1399,
+  "per_cup": 56.0
+ },
+ {
+  "cups": 30,
+  "price_sar": 1450,
+  "per_cup": 48.3
+ },
+ {
+  "cups": 50,
+  "price_sar": 1750,
+  "per_cup": 35.0
+ },
+ {
+  "cups": 60,
+  "price_sar": 2100,
+  "per_cup": 35.0
+ },
+ {
+  "cups": 70,
+  "price_sar": 2450,
+  "per_cup": 35.0
+ },
+ {
+  "cups": 100,
+  "price_sar": 2800,
+  "per_cup": 28.0
+ },
+ {
+  "cups": 150,
+  "price_sar": 3400,
+  "per_cup": 22.7
+ },
+ {
+  "cups": 200,
+  "price_sar": 3900,
+  "per_cup": 19.5
+ }
+]
